@@ -1,0 +1,49 @@
+{
+  "name": "notsc",
+  "version": "1.0.0",
+  "description": "A highly configurable boilerplate generator to kickstart a Node.js + TypeScript API project with ease",
+  "main": "dist/index.js",
+  "bin": {
+    "notsc": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "api",
+    "boilerplate",
+    "generator",
+    "cli"
+  ],
+  "author": "Cedric Ahenkorah",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.3.0",
+    "inquirer": "^9.2.12"
+  }
+}
