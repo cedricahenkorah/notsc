@@ -1,6 +1,6 @@
 {
   "name": "notsc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A highly configurable boilerplate generator to kickstart a Node.js + TypeScript API project with ease",
   "main": "dist/index.js",
   "bin": {
