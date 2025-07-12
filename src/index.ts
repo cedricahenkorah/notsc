@@ -14,9 +14,8 @@ program
   .version('1.0.0')
   .argument('[project-name]', 'Name of the project to create')
   .option('--no-git', 'Skip Git initialization')
-  .option('--help', 'Show help and usage guide')
   .action(
-    async (projectName: string, options: { git?: boolean; help?: boolean }) => {
+    async (projectName: string, options: { git?: boolean }) => {
       try {
         await createProject(projectName, options);
       } catch (error) {

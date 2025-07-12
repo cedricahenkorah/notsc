@@ -34,3 +34,4 @@ jobs:
         run: |
           ls -la dist/
           node dist/index.js --help
+          echo "CLI help command executed successfully"
