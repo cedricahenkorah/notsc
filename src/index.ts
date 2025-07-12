@@ -3,6 +3,13 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { createProject } from './generator';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+// Read version from package.json
+const packageJson = JSON.parse(
+  readFileSync(join(__dirname, '../package.json'), 'utf8')
+);
 
 const program = new Command();
 
@@ -11,7 +18,7 @@ program
   .description(
     'A highly configurable boilerplate generator to kickstart a Node.js + TypeScript API project with ease'
   )
-  .version('1.0.0')
+  .version(packageJson.version)
   .argument('[project-name]', 'Name of the project to create')
   .option('--no-git', 'Skip Git initialization')
   .action(
