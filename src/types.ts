@@ -17,4 +17,4 @@ export interface TemplateData {
   jest: boolean;
   docker: boolean;
   packageManager: 'npm' | 'yarn' | 'pnpm';
-} 
+}
