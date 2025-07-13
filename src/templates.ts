@@ -1,133 +1,133 @@
-import { TemplateData } from './types';
+import { TemplateData } from "./types";
 
 export function getTemplates(data: TemplateData): Record<string, string> {
   const templates: Record<string, string> = {};
 
   // Package.json
-  templates['package.json'] = generatePackageJson(data);
+  templates["package.json"] = generatePackageJson(data);
 
   // TypeScript config
-  templates['tsconfig.json'] = generateTsConfig();
+  templates["tsconfig.json"] = generateTsConfig();
 
   // Source files
-  templates['src/app.ts'] = generateAppFile(data);
-  templates['src/server.ts'] = generateServerFile(data);
-  templates['src/config/database.ts'] = generateDatabaseConfig(data);
-  templates['src/config/redis.ts'] = generateRedisConfig(data);
-  templates['src/controllers/healthController.ts'] = generateHealthController();
-  templates['src/routes/healthRoutes.ts'] = generateHealthRoutes();
-  templates['src/routes/index.ts'] = generateRoutesIndex(data);
-  templates['src/middlewares/errorHandler.ts'] = generateErrorHandler();
-  templates['src/middlewares/requestLogger.ts'] = generateRequestLogger();
-  templates['src/services/healthService.ts'] = generateHealthService();
-  templates['src/types/index.ts'] = generateTypesIndex();
-  templates['src/utils/logger.ts'] = generateLogger();
-  templates['src/utils/api-response.ts'] = generateApiResponse();
+  templates["src/app.ts"] = generateAppFile(data);
+  templates["src/server.ts"] = generateServerFile(data);
+  templates["src/config/database.ts"] = generateDatabaseConfig(data);
+  templates["src/config/redis.ts"] = generateRedisConfig(data);
+  templates["src/controllers/healthController.ts"] = generateHealthController();
+  templates["src/routes/healthRoutes.ts"] = generateHealthRoutes();
+  templates["src/routes/index.ts"] = generateRoutesIndex(data);
+  templates["src/middlewares/errorHandler.ts"] = generateErrorHandler();
+  templates["src/middlewares/requestLogger.ts"] = generateRequestLogger();
+  templates["src/services/healthService.ts"] = generateHealthService();
+  templates["src/types/index.ts"] = generateTypesIndex();
+  templates["src/utils/logger.ts"] = generateLogger();
+  templates["src/utils/api-response.ts"] = generateApiResponse();
 
   // Configuration files
-  templates['.env.example'] = generateEnvExample(data);
-  templates['.gitignore'] = generateGitignore();
-  templates['.eslintrc.js'] = generateEslintConfig();
-  templates['.prettierrc'] = generatePrettierConfig();
-  templates['nodemon.json'] = generateNodemonConfig();
+  templates[".env.example"] = generateEnvExample(data);
+  templates[".gitignore"] = generateGitignore();
+  templates[".eslintrc.js"] = generateEslintConfig();
+  templates[".prettierrc"] = generatePrettierConfig();
+  templates["nodemon.json"] = generateNodemonConfig();
 
   // Testing files (if Jest is selected)
   if (data.jest) {
-    templates['jest.config.js'] = generateJestConfig();
-    templates['src/__tests__/health.test.ts'] = generateHealthTest();
+    templates["jest.config.js"] = generateJestConfig();
+    templates["src/__tests__/health.test.ts"] = generateHealthTest();
   }
 
   // Docker files (if Docker is selected)
   if (data.docker) {
-    templates['Dockerfile'] = generateDockerfile();
-    templates['.dockerignore'] = generateDockerignore();
-    templates['docker-compose.yml'] = generateDockerCompose(data);
+    templates["Dockerfile"] = generateDockerfile();
+    templates[".dockerignore"] = generateDockerignore();
+    templates["docker-compose.yml"] = generateDockerCompose(data);
   }
 
   // README
-  templates['README.md'] = generateReadme(data);
+  templates["README.md"] = generateReadme(data);
 
   return templates;
 }
 
 function generatePackageJson(data: TemplateData): string {
   const dependencies = [
-    'express',
-    'cors',
-    'helmet',
-    'dotenv',
-    'winston',
-    'winston-daily-rotate-file',
+    "express",
+    "cors",
+    "helmet",
+    "dotenv",
+    "winston",
+    "winston-daily-rotate-file",
   ];
 
   const devDependencies = [
-    '@types/express',
-    '@types/cors',
-    '@types/node',
-    'typescript',
-    'ts-node',
-    'nodemon',
+    "@types/express",
+    "@types/cors",
+    "@types/node",
+    "typescript",
+    "ts-node",
+    "nodemon",
   ];
 
   if (data.database) {
-    dependencies.push('mongoose');
-    devDependencies.push('@types/mongoose');
+    dependencies.push("mongoose");
+    devDependencies.push("@types/mongoose");
   }
 
   if (data.swagger) {
-    dependencies.push('swagger-jsdoc', 'swagger-ui-express');
-    devDependencies.push('@types/swagger-jsdoc', '@types/swagger-ui-express');
+    dependencies.push("swagger-jsdoc", "swagger-ui-express");
+    devDependencies.push("@types/swagger-jsdoc", "@types/swagger-ui-express");
   }
 
   if (data.redis) {
-    dependencies.push('ioredis');
-    devDependencies.push('@types/ioredis');
+    dependencies.push("ioredis");
+    devDependencies.push("@types/ioredis");
   }
 
   if (data.jest) {
     devDependencies.push(
-      'jest',
-      'ts-jest',
-      '@types/jest',
-      'supertest',
-      '@types/supertest'
+      "jest",
+      "ts-jest",
+      "@types/jest",
+      "supertest",
+      "@types/supertest",
     );
   }
 
   const scripts: Record<string, string> = {
-    start: 'node dist/server.js',
-    dev: 'nodemon src/server.ts',
-    build: 'tsc',
-    lint: 'eslint src/**/*.ts',
-    format: 'prettier --write src/**/*.ts',
+    start: "node dist/server.js",
+    dev: "nodemon src/server.ts",
+    build: "tsc",
+    lint: "eslint src/**/*.ts",
+    format: "prettier --write src/**/*.ts",
   };
 
   if (data.jest) {
-    scripts.test = 'jest';
-    scripts['test:watch'] = 'jest --watch';
+    scripts.test = "jest";
+    scripts["test:watch"] = "jest --watch";
   }
 
   return JSON.stringify(
     {
       name: data.projectName,
-      version: '1.0.0',
-      description: 'A Node.js TypeScript API',
-      main: 'dist/server.js',
+      version: "1.0.0",
+      description: "A Node.js TypeScript API",
+      main: "dist/server.js",
       scripts,
       dependencies: dependencies.reduce(
-        (acc, dep) => ({ ...acc, [dep]: 'latest' }),
-        {}
+        (acc, dep) => ({ ...acc, [dep]: "latest" }),
+        {},
       ),
       devDependencies: devDependencies.reduce(
-        (acc, dep) => ({ ...acc, [dep]: 'latest' }),
-        {}
+        (acc, dep) => ({ ...acc, [dep]: "latest" }),
+        {},
       ),
-      keywords: ['nodejs', 'typescript', 'api', 'express'],
-      author: '',
-      license: 'MIT',
+      keywords: ["nodejs", "typescript", "api", "express"],
+      author: "",
+      license: "MIT",
     },
     null,
-    2
+    2,
   );
 }
 
@@ -135,11 +135,11 @@ function generateTsConfig(): string {
   return JSON.stringify(
     {
       compilerOptions: {
-        target: 'ES2020',
-        module: 'commonjs',
-        lib: ['ES2020'],
-        outDir: './dist',
-        rootDir: './src',
+        target: "ES2020",
+        module: "commonjs",
+        lib: ["ES2020"],
+        outDir: "./dist",
+        rootDir: "./src",
         strict: true,
         esModuleInterop: true,
         skipLibCheck: true,
@@ -149,11 +149,11 @@ function generateTsConfig(): string {
         declarationMap: true,
         sourceMap: true,
       },
-      include: ['src/**/*'],
-      exclude: ['node_modules', 'dist', '**/*.test.ts'],
+      include: ["src/**/*"],
+      exclude: ["node_modules", "dist", "**/*.test.ts"],
     },
     null,
-    2
+    2,
   );
 }
 
@@ -173,7 +173,7 @@ import routes from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/requestLogger';`;
 
-  let swaggerSetup = '';
+  let swaggerSetup = "";
   if (data.swagger) {
     swaggerSetup = `
 // Swagger configuration
@@ -198,7 +198,7 @@ const swaggerOptions = {
 const specs = swaggerJsdoc(swaggerOptions);`;
   }
 
-  let swaggerRoute = '';
+  let swaggerRoute = "";
   if (data.swagger) {
     swaggerRoute = `
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));`;
@@ -246,7 +246,7 @@ import { connectRedis } from './config/redis';`;
   imports += `
 import { logger } from './utils/logger';`;
 
-  let databaseConnectionHandlers = '';
+  let databaseConnectionHandlers = "";
   if (data.database) {
     databaseConnectionHandlers = `
 mongoose.connection.once('open', () => {
@@ -258,13 +258,13 @@ mongoose.connection.on('error', (err: any) => {
 });`;
   }
 
-  let databaseSetup = '';
+  let databaseSetup = "";
   if (data.database) {
     databaseSetup = `
   connectDatabase();`;
   }
 
-  let redisSetup = '';
+  let redisSetup = "";
   if (data.redis) {
     redisSetup = `
   await connectRedis();`;
@@ -281,7 +281,7 @@ async function startServer() {
   try {${databaseSetup}${redisSetup}
     server.listen(PORT, () => {
       logger.info(\`🚀 ${data.projectName} is running on port \${PORT}\`);
-      ${data.swagger ? `logger.info(\`📚 API Documentation available at http://localhost:\${PORT}/api-docs\`);` : ''}
+      ${data.swagger ? `logger.info(\`📚 API Documentation available at http://localhost:\${PORT}/api-docs\`);` : ""}
     });
   } catch (error) {
     logger.error('Failed to start server:', error);
@@ -606,7 +606,7 @@ NODE_ENV=development
     data.database
       ? `
 MONGODB_URI=mongodb://localhost:27017/${data.projectName}`
-      : ''
+      : ""
   }${
     data.redis
       ? `
@@ -615,7 +615,7 @@ REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_PASSWORD=
 REDIS_DB=0`
-      : ''
+      : ""
   }
 
 # Logging Configuration
@@ -873,7 +873,7 @@ function generateDockerCompose(data: TemplateData): string {
       - redis`;
   }
 
-  let additionalServices = '';
+  let additionalServices = "";
   if (data.database) {
     additionalServices += `
   mongodb:
@@ -892,7 +892,7 @@ function generateDockerCompose(data: TemplateData): string {
       - "6379:6379"`;
   }
 
-  let volumes = '';
+  let volumes = "";
   if (data.database) {
     volumes = `
 volumes:
@@ -913,11 +913,11 @@ A Node.js TypeScript API built with Express.
 
 - ✅ TypeScript support
 - 🧱 Modular architecture (controllers, routes, services)
-- 📦 ${data.database ? 'Database setup (MongoDB)' : 'No database setup'}
-- 🌐 ${data.swagger ? 'Swagger/OpenAPI documentation' : 'No Swagger setup'}
-- 🔄 ${data.redis ? 'Redis setup' : 'No Redis setup'}
-- 🧪 ${data.jest ? 'Jest testing setup' : 'No testing setup'}
-- 🐳 ${data.docker ? 'Docker setup' : 'No Docker setup'}
+- 📦 ${data.database ? "Database setup (MongoDB)" : "No database setup"}
+- 🌐 ${data.swagger ? "Swagger/OpenAPI documentation" : "No Swagger setup"}
+- 🔄 ${data.redis ? "Redis setup" : "No Redis setup"}
+- 🧪 ${data.jest ? "Jest testing setup" : "No testing setup"}
+- 🐳 ${data.docker ? "Docker setup" : "No Docker setup"}
 - 🎯 ESLint + Prettier setup
 - 🔁 Nodemon for development
 
@@ -926,7 +926,7 @@ A Node.js TypeScript API built with Express.
 ### Prerequisites
 
 - Node.js (v16 or higher)
-- ${data.database ? 'MongoDB' : ''}${data.redis ? 'Redis' : ''}
+- ${data.database ? "MongoDB" : ""}${data.redis ? "Redis" : ""}
 
 ### Installation
 
@@ -946,7 +946,7 @@ A Node.js TypeScript API built with Express.
    ${data.packageManager} run dev
    \`\`\`
 
-The server will start on http://localhost:3000${data.swagger ? '\nAPI documentation will be available at http://localhost:3000/api-docs' : ''}
+The server will start on http://localhost:3000${data.swagger ? "\nAPI documentation will be available at http://localhost:3000/api-docs" : ""}
 
 ## Available Scripts
 
@@ -957,7 +957,7 @@ The server will start on http://localhost:3000${data.swagger ? '\nAPI documentat
       ? `
 - \`${data.packageManager} test\` - Run tests
 - \`${data.packageManager} test:watch\` - Run tests in watch mode`
-      : ''
+      : ""
   }
 - \`${data.packageManager} lint\` - Run ESLint
 - \`${data.packageManager} format\` - Format code with Prettier
@@ -1000,7 +1000,7 @@ docker build -t ${data.projectName} .
 docker run -p 3000:3000 ${data.projectName}
 \`\`\`
 `
-    : ''
+    : ""
 }
 
 ## License
