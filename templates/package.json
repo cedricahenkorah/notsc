@@ -1,0 +1,45 @@
+{
+  "name": "{{ projectName }}",
+  "version": "1.0.0",
+  "description": "A Node.js TypeScript API",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"{% if jest %},
+    "test": "jest",
+    "test:watch": "jest --watch"{% endif %}
+  },
+  "dependencies": {
+    "express": "latest",
+    "cors": "latest",
+    "helmet": "latest",
+    "dotenv": "latest",
+    "winston": "latest",
+    "winston-daily-rotate-file": "latest"{% if database %},
+    "mongoose": "latest"{% endif %}{% if swagger %},
+    "swagger-jsdoc": "latest",
+    "swagger-ui-express": "latest"{% endif %}{% if redis %},
+    "ioredis": "latest"{% endif %}
+  },
+  "devDependencies": {
+    "@types/express": "latest",
+    "@types/cors": "latest",
+    "@types/node": "latest",
+    "typescript": "latest",
+    "ts-node": "latest",
+    "nodemon": "latest"{% if swagger %},
+    "@types/swagger-jsdoc": "latest",
+    "@types/swagger-ui-express": "latest"{% endif %}{% if jest %},
+    "jest": "latest",
+    "ts-jest": "latest",
+    "@types/jest": "latest",
+    "supertest": "latest",
+    "@types/supertest": "latest"{% endif %}
+  },
+  "keywords": ["nodejs", "typescript", "api", "express"],
+  "author": "",
+  "license": "MIT"
+}

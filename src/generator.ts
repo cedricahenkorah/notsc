@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import inquirer from 'inquirer';
 import fs from 'fs-extra';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -17,14 +16,13 @@ export async function createProject(
     )
   );
 
-  // Get project configuration
   const config = await getProjectConfig(projectName, options);
 
-  // Create project directory
   const projectPath = path.resolve(process.cwd(), config.name);
 
   if (fs.existsSync(projectPath)) {
-    const { overwrite } = await inquirer.prompt([
+    const inquirer = await import('inquirer');
+    const { overwrite } = await inquirer.default.prompt([
       {
         type: 'confirm',
         name: 'overwrite',
@@ -44,28 +42,23 @@ export async function createProject(
   console.log(chalk.blue(`\n📁 Creating project: ${config.name}`));
 
   try {
-    // Create project directory
     fs.mkdirSync(projectPath, { recursive: true });
 
-    // Generate project files
     await generateFiles(projectPath, config);
 
-    // Install dependencies
     console.log(chalk.blue('\n📦 Installing dependencies...'));
     await installDependencies(projectPath, config.packageManager);
 
-    // Initialize Git repository
     if (config.git) {
       console.log(chalk.blue('\n🔧 Initializing Git repository...'));
       await initializeGit(projectPath);
     }
 
-    // Success message
     console.log(chalk.green('\n✅ Project created successfully!'));
     console.log(chalk.blue('\nNext steps:'));
     console.log(chalk.white(`  cd ${config.name}`));
     console.log(chalk.white('  npm run dev'));
-    console.log(chalk.gray('\nYou’re all set. Have fun building! 🦉🎉'));
+    console.log(chalk.gray('\nYou\'re all set. Have fun building! 🦉🎉'));
   } catch (error) {
     console.error(chalk.red('Error creating project:'), error);
     throw error;
@@ -76,7 +69,8 @@ async function getProjectConfig(
   projectName?: string,
   options: { git?: boolean; help?: boolean } = {}
 ): Promise<ProjectConfig> {
-  const answers = await inquirer.prompt([
+  const inquirer = await import('inquirer');
+  const answers = await inquirer.default.prompt([
     {
       type: 'input',
       name: 'name',
