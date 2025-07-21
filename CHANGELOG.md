@@ -1,5 +1,11 @@
 # notsc
 
+## 1.1.2
+
+### Patch Changes
+
+- a90799e: fixed failure to generate the .gitignore file in the generated project. added a notifier for when there is a new version of the package.
+
 ## 1.1.1
 
 ### Patch Changes
