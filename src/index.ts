@@ -5,11 +5,15 @@ import chalk from 'chalk';
 import { createProject } from './generator';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import updateNotifier from 'update-notifier';
 
-// Read version from package.json
 const packageJson = JSON.parse(
   readFileSync(join(__dirname, '../package.json'), 'utf8')
 );
+
+const notifier = updateNotifier({ pkg: packageJson });
+
+notifier.notify();
 
 const program = new Command();
 
