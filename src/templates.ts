@@ -1,6 +1,7 @@
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 import { TemplateData } from './types';
+import { generateGitignore } from './generate-gitignore';
 
 const templatesPath = path.join(__dirname, '../templates');
 const env = nunjucks.configure(templatesPath, { autoescape: false });
@@ -25,11 +26,7 @@ export function getTemplates(data: TemplateData): Record<string, string> {
     'src/utils/logger.ts',
     'src/utils/api-response.ts',
     '.env.example',
-    '.gitignore',
-    '.eslintrc.js',
-    '.prettierrc',
-    'nodemon.json',
-    'README.md'
+    'README.md',
   ];
 
   if (data.jest) {
@@ -44,6 +41,8 @@ export function getTemplates(data: TemplateData): Record<string, string> {
     const templatePath = file.replace(/\//g, path.sep);
     templates[file] = env.render(templatePath, data);
   });
+
+  templates['.gitignore'] = generateGitignore();
 
   return templates;
 }
