@@ -1,5 +1,11 @@
 # notsc
 
+## 1.1.3
+
+### Patch Changes
+
+- 04983b8: renove automatic git add and commit during project initialization
+
 ## 1.1.2
 
 ### Patch Changes
