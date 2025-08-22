@@ -58,7 +58,7 @@ export async function createProject(
     console.log(chalk.blue('\nNext steps:'));
     console.log(chalk.white(`  cd ${config.name}`));
     console.log(chalk.white('  npm run dev'));
-    console.log(chalk.gray('\nYou\'re all set. Have fun building! 🦉🎉'));
+    console.log(chalk.gray("\nYou're all set. Have fun building! 🦉🎉"));
   } catch (error) {
     console.error(chalk.red('Error creating project:'), error);
     throw error;
@@ -165,11 +165,6 @@ async function installDependencies(
 async function initializeGit(projectPath: string): Promise<void> {
   try {
     execSync('git init', { cwd: projectPath, stdio: 'inherit' });
-    execSync('git add .', { cwd: projectPath, stdio: 'inherit' });
-    execSync('git commit -m "Initial commit"', {
-      cwd: projectPath,
-      stdio: 'inherit',
-    });
   } catch (error) {
     console.warn(chalk.yellow('Warning: Failed to initialize Git repository.'));
     console.warn(chalk.gray('Please initialize Git manually if needed.'));
