@@ -1,5 +1,11 @@
 # notsc
 
+## 1.1.4
+
+### Patch Changes
+
+- 6b090d2: updated the contents of the generated gitignore file
+
 ## 1.1.3
 
 ### Patch Changes
