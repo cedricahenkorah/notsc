@@ -1,15 +1,16 @@
 import 'dotenv/config';
 import http from 'http';
 import app from './app';
-{% if database %}import mongoose from 'mongoose';
+{% if database and databaseType == "MongoDB" %}import mongoose from 'mongoose';
 import { connectDatabase } from './config/database';
+{% endif %}{% if database and databaseType == "PostgreSQL (Prisma ORM)" %}import { connectDatabase } from './config/database';
 {% endif %}{% if redis %}import { connectRedis } from './config/redis';
 {% endif %}import { logger } from './utils/logger';
 
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 
-{% if database %}mongoose.connection.once('open', () => {
+{% if database and databaseType == "MongoDB" %}mongoose.connection.once('open', () => {
   logger.info('MongoDB connection ready');
 });
 
@@ -20,7 +21,8 @@ mongoose.connection.on('error', (err: any) => {
 
 async function startServer() {
   try {
-    {% if database %}connectDatabase();
+    {% if database and databaseType == "MongoDB" %}await connectDatabase();
+    {% endif %}{% if database and databaseType == "PostgreSQL (Prisma ORM)" %}await connectDatabase();
     {% endif %}{% if redis %}await connectRedis();
     {% endif %}server.listen(PORT, () => {
       logger.info(`🚀 {{ projectName }} is running on port ${PORT}`);

@@ -10,7 +10,12 @@
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/*.ts"{% if jest %},
     "test": "jest",
-    "test:watch": "jest --watch"{% endif %}
+    "test:watch": "jest --watch"{% endif %}{% if database and databaseType == "PostgreSQL (Prisma ORM)" %},
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "ts-node prisma/seed.ts"{% endif %}
   },
   "dependencies": {
     "express": "latest",
@@ -18,8 +23,9 @@
     "helmet": "latest",
     "dotenv": "latest",
     "winston": "latest",
-    "winston-daily-rotate-file": "latest"{% if database %},
-    "mongoose": "latest"{% endif %}{% if swagger %},
+    "winston-daily-rotate-file": "latest"{% if database and databaseType == "MongoDB" %},
+    "mongoose": "latest"{% endif %}{% if database and databaseType == "PostgreSQL (Prisma ORM)" %},
+    "@prisma/client": "latest"{% endif %}{% if swagger %},
     "swagger-jsdoc": "latest",
     "swagger-ui-express": "latest"{% endif %}{% if redis %},
     "ioredis": "latest"{% endif %}
@@ -30,7 +36,8 @@
     "@types/node": "latest",
     "typescript": "latest",
     "ts-node": "latest",
-    "nodemon": "latest"{% if swagger %},
+    "nodemon": "latest"{% if database and databaseType == "PostgreSQL (Prisma ORM)" %},
+    "prisma": "latest"{% endif %}{% if swagger %},
     "@types/swagger-jsdoc": "latest",
     "@types/swagger-ui-express": "latest"{% endif %}{% if jest %},
     "jest": "latest",

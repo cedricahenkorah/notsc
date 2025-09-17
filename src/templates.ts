@@ -14,7 +14,6 @@ export function getTemplates(data: TemplateData): Record<string, string> {
     'tsconfig.json',
     'src/app.ts',
     'src/server.ts',
-    'src/config/database.ts',
     'src/config/redis.ts',
     'src/controllers/healthController.ts',
     'src/routes/healthRoutes.ts',
@@ -37,9 +36,26 @@ export function getTemplates(data: TemplateData): Record<string, string> {
     templateFiles.push('Dockerfile', '.dockerignore', 'docker-compose.yml');
   }
 
+  if (data.database && data.databaseType === `MongoDB`) {
+    templateFiles.push('src/config/database.ts');
+  }
+
+  if (data.database && data.databaseType === `PostgreSQL (Prisma ORM)`) {
+    templateFiles.push(
+      'src/config/database-prisma.ts',
+      'prisma/schema.prisma',
+      'prisma/seed.ts'
+    );
+  }
+
   templateFiles.forEach(file => {
     const templatePath = file.replace(/\//g, path.sep);
-    templates[file] = env.render(templatePath, data);
+    // Handle conditional database config file naming
+    let outputFile = file;
+    if (file === 'src/config/database-prisma.ts') {
+      outputFile = 'src/config/database.ts';
+    }
+    templates[outputFile] = env.render(templatePath, data);
   });
 
   templates['.gitignore'] = generateGitignore();

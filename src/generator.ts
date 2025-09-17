@@ -87,8 +87,16 @@ async function getProjectConfig(
     {
       type: 'confirm',
       name: 'database',
-      message: 'Would you like to include database (MongoDB) setup?',
+      message: 'Would you like to include database setup?',
       default: true,
+    },
+    {
+      type: 'list',
+      name: 'databaseType',
+      message: 'Select a database:',
+      choices: ['MongoDB', 'PostgreSQL (Prisma ORM)'],
+      when: answers => answers.database,
+      default: 'MongoDB',
     },
     {
       type: 'confirm',
@@ -126,6 +134,7 @@ async function getProjectConfig(
   return {
     name: answers.name,
     database: answers.database,
+    databaseType: answers.databaseType || null,
     swagger: answers.swagger,
     redis: answers.redis,
     jest: answers.jest,
