@@ -1,5 +1,11 @@
 # notsc
 
+## 1.1.5
+
+### Patch Changes
+
+- f74f942: added option to select database type - mongoDb , postgres (with prisma ORM)
+
 ## 1.1.4
 
 ### Patch Changes
