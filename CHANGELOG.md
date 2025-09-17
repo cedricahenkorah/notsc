@@ -1,5 +1,11 @@
 # notsc
 
+## 1.1.6
+
+### Patch Changes
+
+- 5f5a903: updated notifier and added optional check flag
+
 ## 1.1.5
 
 ### Patch Changes
