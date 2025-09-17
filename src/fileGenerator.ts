@@ -11,6 +11,7 @@ export async function generateFiles(
   const templateData: TemplateData = {
     projectName: config.name,
     database: config.database,
+    databaseType: config.databaseType,
     swagger: config.swagger,
     redis: config.redis,
     jest: config.jest,
