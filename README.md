@@ -453,27 +453,34 @@ Contributors will be recognized in:
 
 ## 📤 Publishing
 
-### For Maintainers
+This project uses [Changesets](https://github.com/changesets/changesets) to manage versions, changelog entries, and npm publishing.
+
+### Prepare a release
+
+Add a changeset with each user-facing change. Select the package, choose a semantic version bump, and describe the change.
 
 ```bash
-# Build the project
+npx changeset
+git add .changeset
+git commit -m "docs(changeset): describe the release"
+```
+
+Use `patch` for fixes, `minor` for backward-compatible features, and `major` for breaking changes.
+
+### Publish a release
+
+Authenticate with npm and verify the project before publishing from `main`.
+
+```bash
+npm login
+npm whoami
 npm run build
-
-# Test the build
 node dist/index.js --help
-
-# Publish to npm
-npm publish --access public
+npm run local-release
+git push origin main --follow-tags
 ```
 
-### Version Management
-
-```bash
-# Update version
-npm version patch  # 1.0.0 -> 1.0.1
-npm version minor  # 1.0.0 -> 1.1.0
-npm version major  # 1.0.0 -> 2.0.0
-```
+`npm run local-release` applies pending changesets, updates the package version and changelog, publishes to npm, and creates the Git tag. Do not run `npm version` separately.
 
 ---
 
