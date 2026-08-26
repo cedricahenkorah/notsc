@@ -10,11 +10,11 @@ export function getTemplates(data: TemplateData): Record<string, string> {
   const templates: Record<string, string> = {};
 
   const templateFiles = [
-    'package.json',
     'tsconfig.json',
     'src/app.ts',
     'src/server.ts',
     'src/config/redis.ts',
+    'src/constants/http-codes.ts',
     'src/controllers/healthController.ts',
     'src/routes/healthRoutes.ts',
     'src/routes/index.ts',
@@ -22,6 +22,10 @@ export function getTemplates(data: TemplateData): Record<string, string> {
     'src/middlewares/requestLogger.ts',
     'src/services/healthService.ts',
     'src/types/index.ts',
+    'src/types/api-response.ts',
+    'src/types/service-result.ts',
+    'src/types/paginated-result.ts',
+    'src/types/health.ts',
     'src/utils/logger.ts',
     'src/utils/api-response.ts',
     '.env.example',

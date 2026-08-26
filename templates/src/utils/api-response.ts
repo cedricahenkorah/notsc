@@ -1,32 +1,16 @@
 import { Response } from 'express';
+import { ApiResponse } from '../types/api-response';
+import { ServiceResult } from '../types/service-result';
 
-export type ApiResponse<T = undefined> = {
-  status: 'success' | 'error';
-  code: number;
-  message?: string;
-  data?: T;
-};
+export function apiResponse<T>(res: Response, result: ServiceResult<T>): void {
+  const statusCode = result.code;
 
-export function successResponse<T>(
-  res: Response,
-  code: number,
-  message?: string,
-  data?: T
-): void {
   const response: ApiResponse<T> = {
-    status: 'success',
-    code,
-    message: message || 'success',
-    data,
+    status: result.ok ? 'success' : 'error',
+    code: statusCode,
+    message: result.message,
+    data: result.data,
   };
-  res.status(code).json(response);
-}
 
-export function errorResponse(
-  res: Response,
-  code: number,
-  message: string
-): void {
-  const response: ApiResponse = { status: 'error', code, message };
-  res.status(code).json(response);
+  res.status(statusCode).json(response);
 }

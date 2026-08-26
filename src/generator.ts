@@ -44,10 +44,15 @@ export async function createProject(
   try {
     fs.mkdirSync(projectPath, { recursive: true });
 
+    console.log(chalk.blue('\n📝 Initializing package.json...'));
+    initPackageJson(projectPath, config);
+
     await generateFiles(projectPath, config);
 
+    patchPackageJson(projectPath, config);
+
     console.log(chalk.blue('\n📦 Installing dependencies...'));
-    await installDependencies(projectPath, config.packageManager);
+    await installDependencies(projectPath, config);
 
     if (config.git) {
       console.log(chalk.blue('\n🔧 Initializing Git repository...'));
@@ -144,21 +149,139 @@ async function getProjectConfig(
   };
 }
 
+function initPackageJson(projectPath: string, config: ProjectConfig): void {
+  const initCmd =
+    config.packageManager === 'yarn'
+      ? 'yarn init -y'
+      : config.packageManager === 'pnpm'
+        ? 'pnpm init'
+        : 'npm init -y';
+
+  try {
+    execSync(initCmd, { cwd: projectPath, stdio: 'inherit' });
+  } catch (error) {
+    console.warn(
+      chalk.yellow(
+        `Warning: Failed to run "${initCmd}". Falling back to writing a minimal package.json.`
+      )
+    );
+    fs.writeJSONSync(
+      path.join(projectPath, 'package.json'),
+      { name: config.name, version: '1.0.0' },
+      { spaces: 2 }
+    );
+  }
+}
+
+function patchPackageJson(projectPath: string, config: ProjectConfig): void {
+  const pkgPath = path.join(projectPath, 'package.json');
+  const pkg = fs.readJSONSync(pkgPath);
+
+  pkg.name = config.name;
+  pkg.version = '1.0.0';
+  pkg.description = 'A Node.js TypeScript API';
+  pkg.main = 'dist/server.js';
+  pkg.keywords = ['nodejs', 'typescript', 'api', 'express'];
+  pkg.author = pkg.author || '';
+  pkg.license = pkg.license || 'MIT';
+
+  const scripts: Record<string, string> = {
+    start: 'node dist/server.js',
+    dev: 'nodemon --exec ts-node src/server.ts',
+    build: 'tsc',
+    lint: 'eslint src/**/*.ts',
+    format: 'prettier --write src/**/*.ts',
+  };
+
+  if (config.jest) {
+    scripts.test = 'jest';
+    scripts['test:watch'] = 'jest --watch';
+  }
+
+  if (config.database && config.databaseType === 'PostgreSQL (Prisma ORM)') {
+    scripts['db:generate'] = 'prisma generate';
+    scripts['db:push'] = 'prisma db push';
+    scripts['db:migrate'] = 'prisma migrate dev';
+    scripts['db:studio'] = 'prisma studio';
+    scripts['db:seed'] = 'ts-node prisma/seed.ts';
+  }
+
+  pkg.scripts = scripts;
+
+  fs.writeJSONSync(pkgPath, pkg, { spaces: 2 });
+}
+
+function resolveDependencies(config: ProjectConfig): {
+  prod: string[];
+  dev: string[];
+} {
+  const prod = [
+    'express',
+    'cors',
+    'helmet',
+    'dotenv',
+    'winston',
+    'winston-daily-rotate-file',
+  ];
+  const dev = [
+    '@types/express',
+    '@types/cors',
+    '@types/node',
+    'typescript',
+    'ts-node',
+    'nodemon',
+  ];
+
+  if (config.database && config.databaseType === 'MongoDB') {
+    prod.push('mongoose');
+  }
+  if (config.database && config.databaseType === 'PostgreSQL (Prisma ORM)') {
+    prod.push('@prisma/client');
+    dev.push('prisma');
+  }
+  if (config.swagger) {
+    prod.push('swagger-jsdoc', 'swagger-ui-express');
+    dev.push('@types/swagger-jsdoc', '@types/swagger-ui-express');
+  }
+  if (config.redis) {
+    prod.push('ioredis');
+  }
+  if (config.jest) {
+    dev.push('jest', 'ts-jest', '@types/jest', 'supertest', '@types/supertest');
+  }
+
+  return { prod, dev };
+}
+
 async function installDependencies(
   projectPath: string,
-  packageManager: 'npm' | 'yarn' | 'pnpm'
+  config: ProjectConfig
 ): Promise<void> {
-  const commands = {
-    npm: 'npm install',
-    yarn: 'yarn install',
-    pnpm: 'pnpm install',
+  const { prod, dev } = resolveDependencies(config);
+
+  const addCmd =
+    config.packageManager === 'yarn'
+      ? 'yarn add'
+      : config.packageManager === 'pnpm'
+        ? 'pnpm add'
+        : 'npm install';
+  const addDevFlag = config.packageManager === 'npm' ? '-D' : '-D';
+
+  const run = (label: string, cmd: string) => {
+    console.log(chalk.gray(`  → ${label}`));
+    execSync(cmd, { cwd: projectPath, stdio: 'inherit' });
   };
 
   try {
-    execSync(commands[packageManager], {
-      cwd: projectPath,
-      stdio: 'inherit',
-    });
+    if (prod.length > 0) {
+      run('installing dependencies', `${addCmd} ${prod.join(' ')}`);
+    }
+    if (dev.length > 0) {
+      run(
+        'installing devDependencies',
+        `${addCmd} ${addDevFlag} ${dev.join(' ')}`
+      );
+    }
   } catch (error) {
     console.warn(
       chalk.yellow('Warning: Failed to install dependencies automatically.')
