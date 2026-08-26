@@ -1,5 +1,11 @@
 # notsc
 
+## 1.2.0
+
+### Minor Changes
+
+- a10cdd8: improved generated dependency setup, API responses, and service health checks
+
 ## 1.1.6
 
 ### Patch Changes
